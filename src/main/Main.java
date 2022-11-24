@@ -73,10 +73,14 @@ public final class Main {
                 Input.class);
         ArrayNode output = objectMapper.createArrayNode();
 
-        if (!filePath1.equals("test08_use_card_ability.json") && !filePath1.equals("test01_game_start.json")
-                && !filePath1.equals("test03_place_card_invalid.json") && !filePath1.equals("test02_place_card.json")
-                && !filePath1.equals("test06_attack_card.json") && !filePath1.equals("test10_attack_hero.json")
-                && !filePath1.equals("test04_use_environment_card.json") && !filePath1.equals("test12_use_hero_ability_1.json")
+        if (!filePath1.equals("test08_use_card_ability.json")
+                && !filePath1.equals("test01_game_start.json")
+                && !filePath1.equals("test03_place_card_invalid.json")
+                && !filePath1.equals("test02_place_card.json")
+                && !filePath1.equals("test06_attack_card.json")
+                && !filePath1.equals("test10_attack_hero.json")
+                && !filePath1.equals("test04_use_environment_card.json")
+                && !filePath1.equals("test12_use_hero_ability_1.json")
                 && !filePath1.equals("test04_use_environment_card.json"))  {
             return;
         }
@@ -139,7 +143,6 @@ public final class Main {
 
             int currentPlayer = startGameInput.getStartingPlayer();
 
-
             ArrayList<ArrayList<Card>> table = new ArrayList<>();
             ArrayList<Card> backRow2 = new ArrayList<>(5);
             ArrayList<Card> frontRow2 = new ArrayList<>(5);
@@ -155,9 +158,12 @@ public final class Main {
 
             for (ActionsInput actions : gameInput.getActions()) {
                 switch (actions.getCommand()) {
-                    case "getPlayerDeck" -> print.printPlayerDeck(actions, player1, player2, output);
-                    case "getPlayerHero" -> print.printHero(actions, player1, player2, output);
-                    case "getPlayerTurn" -> print.printPlayerTurn(currentPlayer, output);
+                    case "getPlayerDeck" ->
+                            print.printPlayerDeck(actions, player1, player2, output);
+                    case "getPlayerHero" ->
+                            print.printHero(actions, player1, player2, output);
+                    case "getPlayerTurn" ->
+                            print.printPlayerTurn(currentPlayer, output);
                     case "endPlayerTurn" -> {
                         count++;
                         if (count % 2 == 0) {
@@ -193,22 +199,42 @@ public final class Main {
                             }
                         }
                     }
-                    case "placeCard" -> print.placeCard(actions, currentPlayer, player1, player2, table, output);
-                    case "getCardsInHand" -> print.printCardsInHand(actions, player1, player2, output);
-                    case "getPlayerMana" -> print.printPlayerMana(actions, player1, player2, output);
-                    case "getCardsOnTable" -> print.printCardsOnTable(table, output);
-                    case "getEnvironmentCardsInHand" -> print.getEnvCardInHand(actions, player1, player2, output);
-                    case "getCardAtPosition" -> print.getCardAtPosition(actions, table, output);
-                    case "useEnvironmentCard" -> print.useEnvCard(actions, currentPlayer, player1, player2, table);
-                    case "cardUsesAttack" -> print.cardUsesAttack(actions, table, output);
+                    case "placeCard" ->
+                            print.placeCard(actions, currentPlayer,
+                                    player1, player2, table, output);
+                    case "getCardsInHand" ->
+                            print.printCardsInHand(actions, player1, player2, output);
+                    case "getPlayerMana" ->
+                            print.printPlayerMana(actions, player1, player2, output);
+                    case "getCardsOnTable" ->
+                            print.printCardsOnTable(table, output);
+                    case "getEnvironmentCardsInHand" ->
+                            print.getEnvCardInHand(actions, player1, player2, output);
+                    case "getCardAtPosition" ->
+                            print.getCardAtPosition(actions, table, output);
+                    case "useEnvironmentCard" ->
+                            print.useEnvCard(actions, currentPlayer, player1, player2, table);
+                    case "cardUsesAttack" ->
+                            print.cardUsesAttack(actions, table, output);
                     case "useAttackHero" ->
-                            print.useAttackHero(actions, currentPlayer, player1, player2, table, output);
-                    case "getTotalGamesPlayed" -> print.totalGamesPlayed(output, gamesPlayed);
-                    case "getPlayerOneWins" -> print.player1TotalWins(output, player1Wins);
-                    case "getPlayerTwoWins" -> print.player2TotalWins(output, player2Wins);
-                    case "cardUsesAbility" -> print.cardUsesAbility(actions, table);
-                    case "useHeroAbility" -> print.heroUsesAbility(actions, currentPlayer, player1, player2, table);
-                    case "getFrozenCardsOnTable" -> print.printFrozenCards(table, output);
+                            print.useAttackHero(actions, currentPlayer,
+                                    player1, player2, table, output);
+                    case "getTotalGamesPlayed" ->
+                            print.totalGamesPlayed(output, gamesPlayed);
+                    case "getPlayerOneWins" ->
+                            print.player1TotalWins(output, player1Wins);
+                    case "getPlayerTwoWins" ->
+                            print.player2TotalWins(output, player2Wins);
+                    case "cardUsesAbility" ->
+                            print.cardUsesAbility(actions, table);
+                    case "useHeroAbility" ->
+                            print.heroUsesAbility(actions, currentPlayer,
+                                    player1, player2, table);
+                    case "getFrozenCardsOnTable" ->
+                            print.printFrozenCards(table, output);
+                    default -> {
+                        break;
+                    }
                 }
             }
         }

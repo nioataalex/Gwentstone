@@ -27,7 +27,19 @@ public class Print {
 
     private ArrayNode arrayNode1;
 
-    public void printPlayerDeck(final ActionsInput actions, final Player player1, final Player player2, final ArrayNode output) {
+    /**
+     * <p>
+     * method that prints the deck of card of a player given
+     * from input
+     * @param actions action given from the input
+     * @param player1 object for the first player
+     * @param player2 object for the second player
+     * @param output arrayNode where the answer is exported
+     */
+    public void printPlayerDeck(final ActionsInput actions,
+                                final Player player1,
+                                final Player player2,
+                                final ArrayNode output) {
         error = new Error();
         mapper = new ObjectMapper();
         node1 = mapper.createObjectNode();
@@ -43,11 +55,12 @@ public class Print {
         for (CardInput card : cards) {
             node2 = mapper.createObjectNode();
             node2.put("mana", card.getMana());
-            if (error.checkNotEnvironment(card.getName()) == 1)
+            if (error.checkNotEnvironment(card.getName()) == 1) {
                 node2.put("attackDamage", card.getAttackDamage());
-            if (card.getHealth() != 0)
+            }
+            if (card.getHealth() != 0) {
                 node2.put("health", card.getHealth());
-
+            }
             node2.put("description", card.getDescription());
             arrayNodeColors = mapper.createArrayNode();
             for (int j = 0; j < card.getColors().size(); j++) {
@@ -61,7 +74,17 @@ public class Print {
         output.add(node1);
     }
 
-    public void printHero(final ActionsInput actions, final Player player1, final Player player2, final ArrayNode output) {
+    /**
+     * <p>
+     * method that prints the hero of the player given form the input
+     * @param actions action given from the input
+     * @param player1 object for the first player
+     * @param player2 object for the second player
+     * @param output arrayNode where the answer is exported
+     */
+    public void printHero(final ActionsInput actions,
+                          final Player player1, final Player player2,
+                          final ArrayNode output) {
         mapper = new ObjectMapper();
         node1 = mapper.createObjectNode();
         new Hero();
@@ -74,7 +97,6 @@ public class Print {
         node1.put("command", "getPlayerHero");
         arrayNode = mapper.createArrayNode();
         node2 = mapper.createObjectNode();
-
         arrayNodeColors = mapper.createArrayNode();
         for (int j = 0; j < heroCard.getColors().size(); j++) {
             arrayNodeColors.add(heroCard.getColors().get(j));
@@ -89,15 +111,32 @@ public class Print {
         output.add(node1);
     }
 
-    public void printPlayerTurn(final int current_player, final ArrayNode output) {
+    /**
+     * <p>
+     * prints the active player
+     * @param currentPlayer active player
+     * @param output arrayNode where the answer is exported
+     */
+    public void printPlayerTurn(final int currentPlayer, final ArrayNode output) {
         mapper = new ObjectMapper();
-        ObjectNode node1 = mapper.createObjectNode();
+        node1 = mapper.createObjectNode();
         node1.put("command", "getPlayerTurn");
-        node1.put("output", current_player);
+        node1.put("output", currentPlayer);
         output.add(node1);
     }
 
-    public void printCardsInHand(final ActionsInput actions, final Player player1, final Player player2, final ArrayNode output) {
+    /**
+     * <p>
+     * method that prints the cards in hand of a player given
+     * from input
+     * @param actions action given from the input
+     * @param player1 object for the first player
+     * @param player2 object for the second player
+     * @param output arrayNode where the answer is exported
+     */
+    public void printCardsInHand(final ActionsInput actions, final Player player1,
+                                 final Player player2,
+                                 final ArrayNode output) {
         error = new Error();
         mapper = new ObjectMapper();
         node1 = mapper.createObjectNode();
@@ -114,17 +153,19 @@ public class Print {
         for (CardInput hand : hands) {
             node2 = mapper.createObjectNode();
             node2.put("mana", hand.getMana());
-            if (error.checkNotEnvironment(hand.getName()) == 1)
+            if (error.checkNotEnvironment(hand.getName()) == 1) {
                 node2.put("attackDamage", hand.getAttackDamage());
+            }
             arrayNodeColors = mapper.createArrayNode();
             for (int j = 0; j < hand.getColors().size(); j++) {
                 arrayNodeColors.add(hand.getColors().get(j));
             }
             node2.put("colors", arrayNodeColors);
-            if (error.checkNotEnvironment(hand.getName()) == 1)
+            if (error.checkNotEnvironment(hand.getName()) == 1) {
                 node2.put("health", hand.getHealth());
+            }
+
             node2.put("description", hand.getDescription());
-            //node2.put("colors", cards1_in_hand.get(i).getColors());
             node2.put("name", hand.getName());
             arrayNode.add(node2);
         }
@@ -132,7 +173,22 @@ public class Print {
         output.add(node1);
     }
 
-    public void placeCard(final ActionsInput actions, final int currentPlayer, final Player player1, final Player player2, final ArrayList<ArrayList<Card>> table, final ArrayNode output) {
+    /**
+     /**
+     * <p>
+     * method that places the card of the current player on the game table,
+     * if an error occurs a suggestive message will be put in the output
+     * @param actions action given from the input
+     * @param currentPlayer active player
+     * @param player1 object for the first player
+     * @param player2 object for the second player
+     * @param table game table
+     * @param output arrayNode where the answer is exported
+     */
+    public void placeCard(final ActionsInput actions,
+                          final int currentPlayer, final Player player1,
+                          final Player player2, final ArrayList<ArrayList<Card>> table,
+                          final ArrayNode output) {
         error = new Error();
         mapper = new ObjectMapper();
         int index = actions.getHandIdx();
@@ -141,14 +197,13 @@ public class Print {
         node1 = mapper.createObjectNode();
         if (currentPlayer == 1) {
             cardToPlace = player1.getHands().get(index);
-            if (error.checkPlaceCard(cardToPlace.getMana(), player1.getMana(), player1.getHands().get(index).getName())) {
+            if (error.checkPlaceCard(cardToPlace.getMana(),
+                    player1.getMana(), player1.getHands().get(index).getName())) {
                 if (table.get(3).size() < 5 || table.get(2).size() < 5) {
-                    if(error.checkRow(cardToPlace, table, 2, 3)) {
-
+                    if (error.checkRow(cardToPlace, table, 2, 3)) {
                         player1.placeCard(cardToPlace, table, 2, 3);
                         player1.setMana(player1.getMana() - cardToPlace.getMana());
-                    }
-                    else {
+                    } else {
                         mapper = new ObjectMapper();
                         node1 = mapper.createObjectNode();
                         node1.put("command", "placeCard");
@@ -158,8 +213,7 @@ public class Print {
                         output.add(node1);
                     }
                 }
-            }
-            else if (error.checkNotEnvironment(player1.getHands().get(index).getName()) == 0) {
+            } else if (error.checkNotEnvironment(player1.getHands().get(index).getName()) == 0) {
                 mapper = new ObjectMapper();
                 node1 = mapper.createObjectNode();
                 node1.put("command", "placeCard");
@@ -178,9 +232,10 @@ public class Print {
             }
         } else if (currentPlayer == 2) {
             cardToPlace = player2.getHands().get(index);
-            if (error.checkPlaceCard(cardToPlace.getMana(), player2.getMana(), player2.getHands().get(index).getName())) {
+            if (error.checkPlaceCard(cardToPlace.getMana(),
+                    player2.getMana(), player2.getHands().get(index).getName())) {
                 if (table.get(0).size() < 5 || table.get(1).size() < 5) {
-                    if(error.checkRow(cardToPlace, table, 1, 0)) {
+                    if (error.checkRow(cardToPlace, table, 1, 0)) {
                         player2.placeCard(cardToPlace, table, 1, 0);
                         player2.setMana(player2.getMana() - cardToPlace.getMana());
                     } else {
@@ -213,21 +268,40 @@ public class Print {
         }
     }
 
-    public void printPlayerMana(final ActionsInput actions, final Player player1, final Player player2, final ArrayNode output) {
+    /**
+     * <p>
+     * method that prints mana of a given player from the input
+     * @param actions action given from the input
+     * @param player1 object for the first player
+     * @param player2 object for the second player
+     * @param output arrayNode where the answer is exported
+     */
+    public void printPlayerMana(final ActionsInput actions, final Player player1,
+                                final Player player2,
+                                final ArrayNode output) {
         mapper = new ObjectMapper();
         node1 = mapper.createObjectNode();
         node1.put("command", "getPlayerMana");
         node1.put("playerIdx", actions.getPlayerIdx());
         new Player();
         Player player;
-        if(actions.getPlayerIdx() == 1) {
+        if (actions.getPlayerIdx() == 1) {
             player = player1;
-        } else player = player2;
+        } else {
+            player = player2;
+        }
         node1.put("output", player.getMana());
         output.add(node1);
     }
 
-    public void printCardsOnTable(final ArrayList<ArrayList<Card>> table, final ArrayNode output) {
+    /**
+     * <p>
+     * prints tha cards from tha games table
+     * @param table game table
+     * @param output arrayNode where the answer is exported
+     */
+    public void printCardsOnTable(final ArrayList<ArrayList<Card>> table,
+                                  final ArrayNode output) {
         mapper = new ObjectMapper();
         node1 = mapper.createObjectNode();
         node1.put("command", "getCardsOnTable");
@@ -239,11 +313,11 @@ public class Print {
                     node2 = mapper.createObjectNode();
                     node2.put("mana", card.getMana());
                     node2.put("attackDamage", card.getAttackDamage());
-                    ArrayNode arrayNode_colors = mapper.createArrayNode();
+                    arrayNodeColors = mapper.createArrayNode();
                     for (int k = 0; k < card.getColors().size(); k++) {
-                        arrayNode_colors.add(card.getColors().get(k));
+                        arrayNodeColors.add(card.getColors().get(k));
                     }
-                    node2.put("colors", arrayNode_colors);
+                    node2.put("colors", arrayNodeColors);
                     node2.put("health", card.getHealth());
                     node2.put("description", card.getDescription());
                     node2.put("name", card.getName());
@@ -256,7 +330,19 @@ public class Print {
         output.add(node1);
     }
 
-    public void getEnvCardInHand(final ActionsInput actions, final Player player1, final Player player2, final ArrayNode output) {
+    /**
+     * <p>
+     * method that prints all environment cards from the hand of
+     * a player with the given index from input
+     * @param actions action given from the input
+     * @param player1 object for the first player
+     * @param player2 object for the second player
+     * @param output arrayNode where the answer is exported
+     */
+    public void getEnvCardInHand(final ActionsInput actions,
+                                 final Player player1,
+                                 final Player player2,
+                                 final ArrayNode output) {
         int index = actions.getPlayerIdx();
         error = new Error();
         mapper = new ObjectMapper();
@@ -288,7 +374,17 @@ public class Print {
         output.add(node1);
     }
 
-    public void getCardAtPosition(final ActionsInput actions, final ArrayList<ArrayList<Card>> table, final ArrayNode output) {
+    /**
+     * <p>
+     * method that prints the card at a given position, if there is no
+     * card at that position, it will print a suggestive message in output
+     * @param actions action given from the input
+     * @param table game table
+     * @param output arrayNode where the answer is exported
+     */
+    public void getCardAtPosition(final ActionsInput actions,
+                                  final ArrayList<ArrayList<Card>> table,
+                                  final ArrayNode output) {
         int x = actions.getX();
         int y = actions.getY();
         mapper = new ObjectMapper();
@@ -297,20 +393,22 @@ public class Print {
         node1.put("command", "getCardAtPosition");
         node1.put("x", x);
         node1.put("y", y);
-        if((table.size() < x || (table.size() > x && table.get(x).size() < y))) {
+        if ((table.size() < x || (table.size() > x && table.get(x).size() < y))) {
             node1.put("output", "No card available at that position.");
         } else  {
             node2 = mapper.createObjectNode();
-            if (error.checkNotEnvironment(table.get(x).get(y).getName()) == 1)
+            if (error.checkNotEnvironment(table.get(x).get(y).getName()) == 1) {
                 node2.put("attackDamage", table.get(x).get(y).getAttackDamage());
-            ArrayNode arrayNode_colors = mapper.createArrayNode();
-            for (int j = 0; j < table.get(x).get(y).getColors().size(); j++) {
-                arrayNode_colors.add(table.get(x).get(y).getColors().get(j));
             }
-            node2.put("colors", arrayNode_colors);
+            arrayNodeColors = mapper.createArrayNode();
+            for (int j = 0; j < table.get(x).get(y).getColors().size(); j++) {
+                arrayNodeColors.add(table.get(x).get(y).getColors().get(j));
+            }
+            node2.put("colors", arrayNodeColors);
             node2.put("description", table.get(x).get(y).getDescription());
-            if (table.get(x).get(y).getHealth() != 0)
+            if (table.get(x).get(y).getHealth() != 0) {
                 node2.put("health", table.get(x).get(y).getHealth());
+            }
             node2.put("mana", table.get(x).get(y).getMana());
             node2.put("name", table.get(x).get(y).getName());
             node1.set("output", node2);
@@ -318,20 +416,45 @@ public class Print {
         output.add(node1);
     }
 
-    public void useEnvCard(final ActionsInput actions, final int currentPlayer, final Player player1, final Player player2, final ArrayList<ArrayList<Card>> table) {
+    /**
+     * <p>
+     * method that takes an environment card from the given player,
+     * which is found at a given index, and uses its ability to
+     * a given row from the table
+     * @param actions action given from the input
+     * @param currentPlayer active player
+     * @param player1 object for the first player
+     * @param player2 object for the second player
+     * @param table game table
+     */
+    public void useEnvCard(final ActionsInput actions, final int currentPlayer,
+                           final Player player1, final Player player2,
+                           final ArrayList<ArrayList<Card>> table) {
         int index = actions.getHandIdx();
         int affectedRow = actions.getAffectedRow();
         Environment effects = new Environment();
         new CardInput();
-        if(currentPlayer == 1) {
+        if (currentPlayer == 1) {
             player1.useEnvCard(index, player1, effects, table, affectedRow);
         }
-        if(currentPlayer == 2) {
+        if (currentPlayer == 2) {
             player2.useEnvCard(index, player2, effects, table, affectedRow);
         }
     }
 
-    public void cardUsesAttack(final  ActionsInput actions, final ArrayList<ArrayList<Card>> table, final ArrayNode output) {
+    /**
+     * <p>
+     * method where a card with given coordinates attacks a card with given
+     * coordinates. The attacker card attacks using attackDamage,
+     * and the attacked card will lose health. If the card has 0 health, it
+     * will be removed from the table
+     * @param actions action given from the input
+     * @param table game table
+     * @param output arrayNode where the answer is exported
+     */
+    public void cardUsesAttack(final  ActionsInput actions,
+                               final ArrayList<ArrayList<Card>> table,
+                               final ArrayNode output) {
         error = new Error();
         int xAttacker = actions.getCardAttacker().getX();
         int yAttacker = actions.getCardAttacker().getY();
@@ -342,34 +465,40 @@ public class Print {
         Card cardAttacker = table.get(xAttacker).get(yAttacker);
         Card cardAttacked = table.get(xAttacked).get(yAttacked);
 
-        if(error.checkSamePlayer(xAttacker,xAttacked)) {
+        if (error.checkSamePlayer(xAttacker, xAttacked)) {
             mapper = new ObjectMapper();
             node1 = mapper.createObjectNode();
             node1.put("command", "cardUsesAttack");
             node1.put("error", "Attacked card does not belong to the enemy.");
             output.add(node1);
-        }
-        else if(table.get(xAttacker).get(yAttacker).isFrozen()) {
+        } else if (table.get(xAttacker).get(yAttacker).isFrozen()) {
             mapper = new ObjectMapper();
             node1 = mapper.createObjectNode();
             node1.put("command", "cardUsesAttack");
             node1.put("error", "Attacker card is frozen.");
             output.add(node1);
-        } else if (table.get(xAttacker).get(yAttacker).isAttacker()){
+        } else if (table.get(xAttacker).get(yAttacker).isAttacker()) {
             mapper = new ObjectMapper();
             node1 = mapper.createObjectNode();
             node1.put("command", "cardUsesAttack");
             node1.put("error", "Attacker card has already attacked this turn.");
             output.add(node1);
-
         } else {
             cardAttacked.setHealth(cardAttacked.getHealth() - cardAttacker.getAttackDamage());
-            if(cardAttacked.getHealth() <= 0)
+            if (cardAttacked.getHealth() <= 0) {
                 table.remove(cardAttacked);
+            }
             table.get(xAttacker).get(yAttacker).setAttacker(true);
         }
     }
 
+    /**
+     * <p>
+     * method that prints in the output the total number of games
+     * played by the 2 players
+     * @param output arrayNode where the answer is exported
+     * @param gamesPlayed  games played
+     */
     public void totalGamesPlayed(final ArrayNode output, final int gamesPlayed) {
         mapper = new ObjectMapper();
         node1 = mapper.createObjectNode();
@@ -378,6 +507,14 @@ public class Print {
         output.add(node1);
     }
 
+    /**
+     * <p>
+     * method that prints at the output the number of games won by
+     * the first player
+     * @param output arrayNode where the answer is exported
+     * @param player1Wins number of games won by
+     *       the first player
+     */
     public  void player1TotalWins(final ArrayNode output, final int player1Wins) {
         mapper = new ObjectMapper();
         node1 = mapper.createObjectNode();
@@ -386,6 +523,14 @@ public class Print {
         output.add(node1);
     }
 
+    /**
+     * <p>
+     * method that prints at the output the number of games won by
+     * the second player
+     * @param output arrayNode where the answer is exported
+     * @param player2Wins number of games won by
+     *       the second player
+     */
     public void player2TotalWins(final ArrayNode output, final int player2Wins) {
         mapper = new ObjectMapper();
         node1 = mapper.createObjectNode();
@@ -394,69 +539,105 @@ public class Print {
         output.add(node1);
     }
 
-    public void useAttackHero(final ActionsInput actions, final int currentPlayer, final Player player1, final Player player2, final ArrayList<ArrayList<Card>> table, final ArrayNode output) {
+    /**
+     * <p>
+     * method where card with given coordinates from the table attackes
+     * the hero of the other player. If the hero's health is 0, then the game
+     * will end, and the attacker will win
+     * @param actions action given from the input
+     * @param currentPlayer active player
+     * @param player1 object for the first player
+     * @param player2 object for the second player
+     * @param table game table
+     * @param output arrayNode where the answer is exported
+     */
+    public void useAttackHero(final ActionsInput actions, final int currentPlayer,
+                              final Player player1, final Player player2,
+                              final ArrayList<ArrayList<Card>> table,
+                              final ArrayNode output) {
         int xAttacker = actions.getCardAttacker().getX();
         int yAttacker = actions.getCardAttacker().getY();
         Card cardAttacker =  table.get(xAttacker).get(yAttacker);
         mapper = new ObjectMapper();
         node1 = mapper.createObjectNode();
-        if(currentPlayer == 2) {
-            player1.getHero().setHealth(player1.getHero().getHealth() - cardAttacker.getAttackDamage());
-            if(player1.getHero().getHealth() <= 0) {
+        if (currentPlayer == 2) {
+            player1.getHero().setHealth(player1.getHero().getHealth()
+                    - cardAttacker.getAttackDamage());
+            if (player1.getHero().getHealth() <= 0) {
                 node1.put("gameEnded", "Player two killed the enemy hero.");
                 output.add(node1);
             }
-        }
-        else if(currentPlayer == 1) {
-            player2.getHero().setHealth(player2.getHero().getHealth() - cardAttacker.getAttackDamage());
+        } else if (currentPlayer == 1) {
+            player2.getHero().setHealth(player2.getHero().getHealth()
+                    - cardAttacker.getAttackDamage());
             player2.setHero(player2.getHero());
-            if(player2.getHero().getHealth() <= 0) {
-                node1.put("gameEnded","Player one killed the enemy hero.");
+            if (player2.getHero().getHealth() <= 0) {
+                node1.put("gameEnded", "Player one killed the enemy hero.");
                 output.add(node1);
             }
         }
     }
 
 
-    public void heroUsesAbility(final ActionsInput actions, final int currentPlayer, final Player player1, final Player player2, final ArrayList<ArrayList<Card>> table) {
+    /**
+     * <p>
+     * method where hero of the current players attacks the given row
+     * from the table, using his ability
+     * @param actions action given from the input
+     * @param currentPlayer active player
+     * @param player1 object for the first player
+     * @param player2 object for the second player
+     * @param table game table
+     */
+    public void heroUsesAbility(final ActionsInput actions, final int currentPlayer,
+                                final Player player1, final Player player2,
+                                final ArrayList<ArrayList<Card>> table) {
         mapper = new ObjectMapper();
         node1 = mapper.createObjectNode();
         node1.put("command", "useHeroAbility");
-        int affected_row = actions.getAffectedRow();
-        node1.put("command", affected_row);
-        if(currentPlayer == 1) {
-            player1.heroUsesAbility(player1, table, affected_row);
-        } else if(currentPlayer == 2) {
-            player2.heroUsesAbility(player2, table, affected_row);
+        int affectedRow = actions.getAffectedRow();
+        node1.put("command", affectedRow);
+        if (currentPlayer == 1) {
+            player1.heroUsesAbility(player1, table, affectedRow);
+        } else if (currentPlayer == 2) {
+            player2.heroUsesAbility(player2, table, affectedRow);
         }
     }
 
-    public void printFrozenCards(final ArrayList<ArrayList<Card>> table, final ArrayNode output){
+    /**
+     * <p>
+     * method that prints all the frozen cards from the table
+     * @param table game table
+     * @param output arrayNode where the answer is exported
+     */
+    public void printFrozenCards(final ArrayList<ArrayList<Card>> table, final ArrayNode output) {
         mapper = new ObjectMapper();
         node1 = mapper.createObjectNode();
         node1.put("command", "getFrozenCardsOnTable");
         arrayNode = mapper.createArrayNode();
         int existFrozen = 0;
-        for (ArrayList<Card> cards : table)
-            for (Card card : cards)
-                if (card.isFrozen())
+        for (ArrayList<Card> cards : table) {
+            for (Card card : cards) {
+                if (card.isFrozen()) {
                     existFrozen++;
-        if(existFrozen != 0) {
+                }
+            }
+        }
+        if (existFrozen != 0) {
             for (ArrayList<Card> cards : table) {
                 arrayNode1 = mapper.createArrayNode();
                 for (Card card : cards) {
                     if (card.isFrozen()) {
-                        ObjectNode node2 = mapper.createObjectNode();
+                        node2 = mapper.createObjectNode();
                         node2.put("mana", card.getMana());
                         node2.put("attackDamage", card.getAttackDamage());
-                        ArrayNode arrayNode_colors = mapper.createArrayNode();
+                        arrayNodeColors = mapper.createArrayNode();
                         for (int k = 0; k < card.getColors().size(); k++) {
-                            arrayNode_colors.add(card.getColors().get(k));
+                            arrayNodeColors.add(card.getColors().get(k));
                         }
-                        node2.put("colors", arrayNode_colors);
+                        node2.put("colors", arrayNodeColors);
                         node2.put("health", card.getHealth());
                         node2.put("description", card.getDescription());
-                        //node2.put("colors", cards1_in_hand.get(i).getColors());
                         node2.put("name", card.getName());
                         arrayNode1.add(node2);
                     }
@@ -471,8 +652,15 @@ public class Print {
         output.add(node1);
     }
 
-
-    public void cardUsesAbility(final ActionsInput actions, final ArrayList<ArrayList<Card>> table) {
+    /**
+     * <p>
+     * method where a card with given coordinates uses its ability
+     * on another card with given coordinates
+     * @param actions action given from the input
+     * @param table game table
+     */
+    public void cardUsesAbility(final ActionsInput actions,
+                                final ArrayList<ArrayList<Card>> table) {
         int xAttacker =  actions.getCardAttacker().getX();
         int yAttacker =  actions.getCardAttacker().getY();
         int xAttacked =  actions.getCardAttacked().getX();
@@ -481,7 +669,7 @@ public class Print {
         Minion minion = new Minion();
         minion.useAbility(xAttacker, yAttacker, xAttacked, yAttacked, table);
 
-        if(table.get(xAttacked).get(yAttacked).getHealth() <= 0) {
+        if (table.get(xAttacked).get(yAttacked).getHealth() <= 0) {
             table.get(xAttacked).remove(yAttacked);
         }
     }
